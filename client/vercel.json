@@ -1,11 +1,5 @@
-﻿{
+{
     "installCommand":  "npm install",
     "buildCommand":  "npm run build",
-    "outputDirectory":  ".next",
-    "rewrites":  [
-                     {
-                         "destination":  "https://social-development-api.fly.dev/api/auth/:path*",
-                         "source":  "/api/auth/:path*"
-                     }
-                 ]
+    "outputDirectory":  ".next"
 }
