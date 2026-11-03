@@ -31,6 +31,13 @@ export const auth = betterAuth({
     process.env.CLIENT_URL || "http://localhost:3000"
   ],
 
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true
+    }
+  },
+
   database: mongodbAdapter(client.db(databaseName), {
     client
   }),
