@@ -18,3 +18,5 @@
 auth-backup-*/
 git-history-backup-*/
 *.bak
+.vercel
+.env*
