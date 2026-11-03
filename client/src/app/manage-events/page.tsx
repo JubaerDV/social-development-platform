@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 
-const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const api = process.env.NEXT_PUBLIC_API_URL || "https://social-development-api.fly.dev";
 
 type EventItem = {
   _id: string;
