@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -63,8 +63,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
       <section className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl sm:p-10">
         <Link href="/" className="text-sm font-bold text-emerald-700">
-          â† Social Development
-        </Link>
+          Back to Social Development</Link>
 
         <div className="mt-8">
           <p className="text-sm font-semibold uppercase tracking-widest text-emerald-700">
