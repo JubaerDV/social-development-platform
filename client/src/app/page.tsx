@@ -58,7 +58,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const saved = localStorage.getItem("site-theme");
+    if (saved === "dark") setDark(true);
+  }, []);
+
+  useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem("site-theme", dark ? "dark" : "light");
   }, [dark]);
 
   async function logout() {
@@ -84,7 +90,7 @@ export default function Home() {
           <button className="theme-toggle" onClick={() => setDark(!dark)} aria-label="Toggle color theme">{dark ? "☀" : "☾"}</button>
           {isPending ? <span className="nav-loading">...</span> : session ? (
             <div className="profile-wrap">
-              <button className="profile-button" onClick={() => setMenuOpen(!menuOpen)}><span className="avatar">{(session.user.name || "M").charAt(0).toUpperCase()}</span><span>{session.user.name || "My account"}</span><span>⌄</span></button>
+              <button className="profile-button" onClick={() => setMenuOpen(!menuOpen)}>{session.user.image ? <img className="avatar avatar-image" src={session.user.image} alt="Profile" /> : <span className="avatar">{(session.user.name || "M").charAt(0).toUpperCase()}</span>}<span>{session.user.name || "My account"}</span><span>⌄</span></button>
               {menuOpen && <div className="profile-menu"><span className="profile-name">{session.user.name}</span><Link href="/dashboard">Dashboard</Link><Link href="/create-event">Create Event</Link><Link href="/manage-events">Manage Events</Link><Link href="/joined-events">Joined Events</Link><button onClick={logout}>Logout</button></div>}
             </div>
           ) : <><Link className="login-link" href="/login">Log in</Link><Link className="button button-small" href="/register">Join the movement <span>↗</span></Link></>}

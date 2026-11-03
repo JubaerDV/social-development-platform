@@ -197,13 +197,13 @@ export default function RegisterPage() {
 
             <div className="mt-3 space-y-1.5 rounded-xl bg-slate-50 p-3 text-xs">
               <p className={requirementClass(hasMinLength)}>
-                {hasMinLength ? "âœ“" : "â—‹"} At least 6 characters
+                {hasMinLength ? "✓" : "○"} At least 6 characters
               </p>
               <p className={requirementClass(hasUppercase)}>
-                {hasUppercase ? "âœ“" : "â—‹"} At least 1 uppercase letter (A-Z)
+                {hasUppercase ? "✓" : "○"} At least 1 uppercase letter (A-Z)
               </p>
               <p className={requirementClass(hasLowercase)}>
-                {hasLowercase ? "âœ“" : "â—‹"} At least 1 lowercase letter (a-z)
+                {hasLowercase ? "✓" : "○"} At least 1 lowercase letter (a-z)
               </p>
             </div>
           </div>
@@ -233,11 +233,11 @@ export default function RegisterPage() {
             </div>
             <div className="mt-3 space-y-1.5 rounded-xl bg-slate-50 p-3 text-xs">
               {!confirmPassword ? (
-                <p className="text-slate-400">â—‹ Re-enter your password to confirm</p>
+                <p className="text-slate-400">○ Re-enter your password to confirm</p>
               ) : passwordsMatch ? (
-                <p className="text-emerald-700">âœ“ Passwords match</p>
+                <p className="text-emerald-700">✓ Passwords match</p>
               ) : (
-                <p className="text-red-600">â—‹ Passwords do not match</p>
+                <p className="text-red-600">○ Passwords do not match</p>
               )}
             </div>
           </div>

@@ -112,3 +112,32 @@ h1 em,h2 em{font-weight:400;color:#81984b}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(max-width:900px){.desktop-nav{gap:15px}.hero{padding-top:45px;min-height:560px}.hero-visual{min-height:410px}.event-grid{grid-template-columns:repeat(2,1fr)}.gallery-grid{grid-template-columns:repeat(2,1fr);height:430px}.gallery-photo-2,.gallery-photo-4{transform:none}.newsletter-section{align-items:flex-start;flex-direction:column}.newsletter-form{max-width:100%}}
 @media(max-width:640px){.top-strip{padding:0 5%;font-size:8px}.top-strip span:last-child{display:none}.site-header{height:70px;padding:0 5%}.brand{font-size:18px}.desktop-nav{display:none}.header-actions{gap:10px}.login-link{font-size:11px}.button-small{padding:10px;font-size:10px}.hero{display:block;padding:45px 6% 18px}.hero-copy{padding-top:0}.hero h1{font-size:49px}.hero-copy>p{font-size:13px}.hero-actions{gap:15px;flex-wrap:wrap}.hero-proof{margin-top:32px}.hero-visual{min-height:340px;margin-top:35px}.hero-photo{inset:0 5% 18px 0}.photo-note{left:0}.hero-stamp{width:80px;height:80px}.hero-bottom{margin-top:25px}.intro-section,.events-section,.gallery-section{padding:65px 6%}.intro-grid{grid-template-columns:1fr;gap:20px}.intro-grid h2,.section-heading h2,.gallery-heading h2{font-size:42px}.feature-grid{grid-template-columns:1fr;margin-top:35px}.feature-card{min-height:190px}.section-heading,.gallery-heading{align-items:flex-start;gap:20px;flex-direction:column}.event-grid{grid-template-columns:1fr}.event-image{height:210px}.gallery-grid{height:600px;grid-template-columns:1fr 1fr;gap:9px}.gallery-photo span{font-size:15px;left:10px;bottom:10px}.newsletter-section{padding:55px 6%}.newsletter-section h2{font-size:36px}.footer-main{display:grid;grid-template-columns:1fr 1fr;gap:30px}.footer-main>p{font-size:16px}.footer-links{grid-column:1/-1}.footer-bottom{gap:15px;flex-direction:column}.profile-button>span:nth-child(2){display:none}}
+
+/* Global dark theme */
+html.dark {
+  color-scheme: dark;
+  --background: #10251e;
+  --foreground: #edf2e8;
+  --muted: #bdc9bc;
+  --line: #315444;
+}
+
+html.dark body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background: #19392c;
+  color: #edf2e8;
+  border-color: #315444;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #bdc9bc;
+}
+
+.avatar-image{object-fit:cover;overflow:hidden;flex-shrink:0;}

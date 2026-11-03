@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -9,34 +9,73 @@ const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 type EventItem = {
   _id: string;
   title: string;
+  description: string;
   location: string;
   eventDate: string;
   imageUrl?: string;
-  category?: string;
+  category: string;
 };
+
+type EventForm = {
+  title: string;
+  description: string;
+  location: string;
+  eventDate: string;
+  imageUrl: string;
+  category: string;
+};
+
+const emptyForm: EventForm = {
+  title: "",
+  description: "",
+  location: "",
+  eventDate: "",
+  imageUrl: "",
+  category: ""
+};
+
+function toLocalDateTime(value: string) {
+  const date = new Date(value);
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
 
 export default function MemberEventsPage() {
   const { data: session, isPending } = authClient.useSession();
+
   const [events, setEvents] = useState<EventItem[]>([]);
   const [message, setMessage] = useState("Loading events...");
-  const [deletingId, setDeletingId] = useState("");
   const [error, setError] = useState("");
+  const [deletingId, setDeletingId] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [editingId, setEditingId] = useState("");
+  const [form, setForm] = useState<EventForm>(emptyForm);
 
   useEffect(() => {
     if (!session) return;
 
     let active = true;
 
-    fetch(`${api}/api/events/member/managed`, { credentials: "include" })
+    fetch(`${api}/api/events/member/managed`, {
+      credentials: "include"
+    })
       .then(async response => {
         const data = await response.json();
-        if (!response.ok) throw new Error(data.message || "Unable to load events.");
+        if (!response.ok) {
+          throw new Error(data.message || "Unable to load events.");
+        }
         if (!active) return;
         setEvents(data.events || []);
         setMessage("");
       })
       .catch(reason => {
-        if (active) setMessage(reason instanceof Error ? reason.message : "Unable to load events.");
+        if (active) {
+          setMessage(
+            reason instanceof Error
+              ? reason.message
+              : "Unable to load events."
+          );
+        }
       });
 
     return () => {
@@ -44,8 +83,77 @@ export default function MemberEventsPage() {
     };
   }, [session]);
 
-  async function remove(id: string) {
+  function startEdit(event: EventItem) {
     setError("");
+    setMessage("");
+    setEditingId(event._id);
+    setForm({
+      title: event.title,
+      description: event.description,
+      location: event.location,
+      eventDate: toLocalDateTime(event.eventDate),
+      imageUrl: event.imageUrl || "",
+      category: event.category
+    });
+  }
+
+  function cancelEdit() {
+    setEditingId("");
+    setForm(emptyForm);
+    setError("");
+  }
+
+  async function saveEdit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!editingId) return;
+
+    setError("");
+    setMessage("");
+    setSaving(true);
+
+    try {
+      const response = await fetch(`${api}/api/events/${editingId}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Unable to update event.");
+      }
+
+      setEvents(current =>
+        current.map(item =>
+          item._id === editingId ? data.event : item
+        )
+      );
+
+      setEditingId("");
+      setForm(emptyForm);
+      setMessage("Event updated successfully.");
+    } catch (reason) {
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : "Unable to update event."
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function remove(id: string) {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this event? This cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    setError("");
+    setMessage("");
     setDeletingId(id);
 
     try {
@@ -53,6 +161,7 @@ export default function MemberEventsPage() {
         method: "DELETE",
         credentials: "include"
       });
+
       const data = await response.json();
 
       if (!response.ok) {
@@ -60,29 +169,133 @@ export default function MemberEventsPage() {
       }
 
       setEvents(current => current.filter(item => item._id !== id));
+
+      if (editingId === id) cancelEdit();
+
+      setMessage("Event deleted successfully.");
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Unable to delete event.");
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : "Unable to delete event."
+      );
     } finally {
       setDeletingId("");
     }
   }
 
   if (isPending) {
-    return <main className="form-page">Loading...</main>;
+    return <main className="form-page">Loading your account...</main>;
   }
 
   if (!session) {
-    return <main className="form-page"><h1>Please log in</h1><Link href="/login">Login</Link></main>;
+    return (
+      <main className="form-page">
+        <h1>Please log in</h1>
+        <Link href="/login">Login</Link>
+      </main>
+    );
   }
 
   return (
     <main className="form-page">
-      <Link href="/" className="form-back">← Back to home</Link>
+      <Link href="/" className="form-back">← Back</Link>
+
       <section className="form-panel">
         <span className="section-kicker">YOUR COMMUNITY ACTIVITY</span>
         <h1>Events I've organized</h1>
+
         {message && <p role="status">{message}</p>}
-        {error && <p role="alert">{error}</p>}
+        {error && <p role="alert" className="form-error">{error}</p>}
+
+        {editingId && (
+          <form onSubmit={saveEdit} className="event-form">
+            <h2>Edit event</h2>
+
+            <label>
+              Event title
+              <input
+                required
+                maxLength={120}
+                value={form.title}
+                onChange={e => setForm({ ...form, title: e.target.value })}
+              />
+            </label>
+
+            <label>
+              Category
+              <select
+                required
+                value={form.category}
+                onChange={e => setForm({ ...form, category: e.target.value })}
+              >
+                <option value="">Select a category</option>
+                <option>Community Service</option>
+                <option>Environment</option>
+                <option>Education</option>
+                <option>Health</option>
+                <option>Fundraising</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label>
+              Location
+              <input
+                required
+                maxLength={200}
+                value={form.location}
+                onChange={e => setForm({ ...form, location: e.target.value })}
+              />
+            </label>
+
+            <label>
+              Event date and time
+              <input
+                required
+                type="datetime-local"
+                min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
+                value={form.eventDate}
+                onChange={e => setForm({ ...form, eventDate: e.target.value })}
+              />
+            </label>
+
+            <label>
+              Image URL (optional)
+              <input
+                type="url"
+                value={form.imageUrl}
+                onChange={e => setForm({ ...form, imageUrl: e.target.value })}
+              />
+            </label>
+
+            <label className="full-field">
+              Description
+              <textarea
+                required
+                rows={6}
+                maxLength={5000}
+                value={form.description}
+                onChange={e => setForm({ ...form, description: e.target.value })}
+              />
+            </label>
+
+            <div className="full-field" style={{ display: "flex", gap: 12 }}>
+              <button className="button" type="submit" disabled={saving}>
+                {saving ? "Saving..." : "Save changes"}
+              </button>
+              <button
+                className="button"
+                type="button"
+                disabled={saving}
+                onClick={cancelEdit}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+
         {events.length > 0 && (
           <div className="event-grid">
             {events.map(event => (
@@ -93,19 +306,34 @@ export default function MemberEventsPage() {
                     backgroundImage: `url("${event.imageUrl || "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=900&q=85"}")`
                   }}
                 />
+
                 <div className="event-content">
-                  <div className="event-date">{new Date(event.eventDate).toLocaleDateString()}</div>
+                  <div className="event-date">
+                    {new Date(event.eventDate).toLocaleDateString()}
+                  </div>
+
                   <h3>{event.title}</h3>
                   <p>{event.location}</p>
+
                   <div className="event-card-bottom">
-                    <Link href={`/events/${event._id}`}>View event ↗</Link>
+                    <Link href={`/events/${event._id}`}>View event →</Link>
+
                     <button
                       className="text-link"
                       type="button"
-                      disabled={deletingId === event._id}
+                      disabled={saving || deletingId === event._id}
+                      onClick={() => startEdit(event)}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      className="text-link"
+                      type="button"
+                      disabled={deletingId === event._id || saving}
                       onClick={() => remove(event._id)}
                     >
-                      {deletingId === event._id ? "Deleting..." : "Delete event"}
+                      {deletingId === event._id ? "Deleting..." : "Delete"}
                     </button>
                   </div>
                 </div>
@@ -113,8 +341,11 @@ export default function MemberEventsPage() {
             ))}
           </div>
         )}
-        {!events.length && !message && <p>You haven't organized any events yet.</p>}
-        <Link href="/create-event" className="button">Create an event ↗</Link>
+
+        {!events.length && !message && (
+          <p>You haven't organized any events yet.</p>
+        )}
+        <Link href="/create-event" className="button">Create an event</Link>
       </section>
     </main>
   );
