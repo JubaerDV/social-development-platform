@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -81,7 +81,7 @@ export default function RegisterPage() {
     try {
       const result = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "http://localhost:3000/dashboard",
+        callbackURL: `${window.location.origin}/dashboard`,
       });
 
       if (result.error) {
@@ -101,7 +101,7 @@ export default function RegisterPage() {
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
       <section className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-8 shadow-xl sm:p-10">
         <Link href="/" className="text-sm font-bold text-emerald-700">
-          ← Social Development
+          â† Social Development
         </Link>
 
         <div className="mt-8">
@@ -198,13 +198,13 @@ export default function RegisterPage() {
 
             <div className="mt-3 space-y-1.5 rounded-xl bg-slate-50 p-3 text-xs">
               <p className={requirementClass(hasMinLength)}>
-                {hasMinLength ? "✓" : "○"} At least 6 characters
+                {hasMinLength ? "âœ“" : "â—‹"} At least 6 characters
               </p>
               <p className={requirementClass(hasUppercase)}>
-                {hasUppercase ? "✓" : "○"} At least 1 uppercase letter (A-Z)
+                {hasUppercase ? "âœ“" : "â—‹"} At least 1 uppercase letter (A-Z)
               </p>
               <p className={requirementClass(hasLowercase)}>
-                {hasLowercase ? "✓" : "○"} At least 1 lowercase letter (a-z)
+                {hasLowercase ? "âœ“" : "â—‹"} At least 1 lowercase letter (a-z)
               </p>
             </div>
           </div>
@@ -234,11 +234,11 @@ export default function RegisterPage() {
             </div>
             <div className="mt-3 space-y-1.5 rounded-xl bg-slate-50 p-3 text-xs">
               {!confirmPassword ? (
-                <p className="text-slate-400">○ Re-enter your password to confirm</p>
+                <p className="text-slate-400">â—‹ Re-enter your password to confirm</p>
               ) : passwordsMatch ? (
-                <p className="text-emerald-700">✓ Passwords match</p>
+                <p className="text-emerald-700">âœ“ Passwords match</p>
               ) : (
-                <p className="text-red-600">○ Passwords do not match</p>
+                <p className="text-red-600">â—‹ Passwords do not match</p>
               )}
             </div>
           </div>
