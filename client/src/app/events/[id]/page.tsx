@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 
-const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const api = "";
 
 type EventItem = { _id: string; title: string; description: string; imageUrl?: string; location: string; category: string; eventDate: string; organizerName: string; joinedCount?: number };
 
