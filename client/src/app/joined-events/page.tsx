@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { formatEventDate } from "@/lib/event-time";
 
 const api = "";
 
@@ -68,7 +69,7 @@ export default function JoinedEventsPage() {
                   }}
                 />
                 <div className="event-content">
-                  <div className="event-date">{new Date(event.eventDate).toLocaleDateString()}</div>
+                  <div className="event-date">{formatEventDate(event.eventDate)}</div>
                   <h3>{event.title}</h3>
                   <p>{event.location}</p>
                   <Link href={`/events/${event._id}`}>View event ↗</Link>

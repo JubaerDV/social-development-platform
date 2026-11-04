@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { eventDateToIso, minimumEventDate } from "@/lib/event-time";
 
 const api = "";
 
@@ -26,7 +27,7 @@ export default function CreateEventPage() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ ...payload, eventDate: eventDateToIso(String(payload.eventDate || "")) })
       });
 
       const data = await response.json();
@@ -107,12 +108,12 @@ export default function CreateEventPage() {
           </label>
 
           <label>
-            Event date and time
+            Event date and time (Bangladesh)
             <input
               name="eventDate"
               type="datetime-local"
               required
-              min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
+              min={minimumEventDate()}
             />
           </label>
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { eventDateToIso, minimumEventDate, formatEventDate, toEventInput } from "@/lib/event-time";
 
 const api = "";
 
@@ -35,9 +36,7 @@ const emptyForm: EventForm = {
 };
 
 function toLocalDateTime(value: string) {
-  const date = new Date(value);
-  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return local.toISOString().slice(0, 16);
+  return toEventInput(value);
 }
 
 export default function MemberEventsPage() {
@@ -116,7 +115,7 @@ export default function MemberEventsPage() {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form)
+        body: JSON.stringify({ ...form, eventDate: eventDateToIso(form.eventDate) })
       });
 
       const data = await response.json();
@@ -250,11 +249,11 @@ export default function MemberEventsPage() {
             </label>
 
             <label>
-              Event date and time
+              Event date and time (Bangladesh)
               <input
                 required
                 type="datetime-local"
-                min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
+                min={minimumEventDate()}
                 value={form.eventDate}
                 onChange={e => setForm({ ...form, eventDate: e.target.value })}
               />
@@ -309,7 +308,7 @@ export default function MemberEventsPage() {
 
                 <div className="event-content">
                   <div className="event-date">
-                    {new Date(event.eventDate).toLocaleDateString()}
+                    {formatEventDate(event.eventDate)}
                   </div>
 
                   <h3>{event.title}</h3>
