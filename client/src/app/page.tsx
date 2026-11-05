@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { formatEventDate } from "@/lib/event-time";
 
@@ -34,14 +33,10 @@ const gallery = [
 ];
 
 export default function Home() {
-  const router = useRouter();
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session } = authClient.useSession();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
-  const [dark, setDark] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [notice, setNotice] = useState("");
-  const [year, setYear] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(`${api}/api/events?upcoming=true&limit=6`)
@@ -54,24 +49,9 @@ export default function Home() {
       .finally(() => setEventsLoading(false));
   }, []);
 
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("site-theme");
-    if (saved === "dark") setDark(true);
-  }, []);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-    localStorage.setItem("site-theme", dark ? "dark" : "light");
-  }, [dark]);
 
-  async function logout() {
-    await authClient.signOut();
-    router.refresh();
-  }
 
   async function subscribe(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -80,23 +60,7 @@ export default function Home() {
   }
 
   return (
-    <main className={dark ? "site-shell dark-mode" : "site-shell"}>
-      <div className="top-strip"><span>Small actions. Stronger communities.</span><span>Be the reason someone smiles today <span aria-hidden="true">↗</span></span></div>
-      <header className="site-header">
-        <Link href="/" className="brand"><span className="brand-mark">S<span>+</span></span><span>social<span className="brand-light">good</span><small>DEVELOPMENT EVENTS</small></span></Link>
-        <nav className="desktop-nav">
-          <a href="#events">Upcoming Events</a><a href="#about">About us</a><a href="#gallery">Our impact</a>
-        </nav>
-        <div className="header-actions">
-          <button className="theme-toggle" onClick={() => setDark(!dark)} aria-label="Toggle color theme">{dark ? "☀" : "☾"}</button>
-          {isPending ? <span className="nav-loading">...</span> : session ? (
-            <div className="profile-wrap">
-              <button className="profile-button" onClick={() => setMenuOpen(!menuOpen)}>{session.user.image ? <img className="avatar avatar-image" src={session.user.image} alt="Profile" /> : <span className="avatar">{(session.user.name || "M").charAt(0).toUpperCase()}</span>}<span>{session.user.name || "My account"}</span><span>⌄</span></button>
-              {menuOpen && <div className="profile-menu"><span className="profile-name">{session.user.name}</span><Link href="/dashboard">Dashboard</Link><Link href="/create-event">Create Event</Link><Link href="/manage-events">Manage Events</Link><Link href="/joined-events">Joined Events</Link><button onClick={logout}>Logout</button></div>}
-            </div>
-          ) : <><Link className="login-link" href="/login">Log in</Link><Link className="button button-small" href="/register">Join the movement <span>↗</span></Link></>}
-        </div>
-      </header>
+    <main className="site-shell">
 
       <section className="hero">
         <div className="hero-copy">
@@ -129,7 +93,6 @@ export default function Home() {
 
       <section className="newsletter-section"><div><div className="section-kicker">A LITTLE GOOD IN YOUR INBOX <span>✳</span></div><h2>Stay close to the <em>good stuff.</em></h2><p>Get community stories and event inspiration delivered to your inbox.</p></div><form className="newsletter-form" onSubmit={subscribe}><label className="sr-only" htmlFor="newsletter-email">Email address</label><input id="newsletter-email" type="email" placeholder="Your email address" required /><button type="submit">Count me in <span>↗</span></button>{notice && <small role="status">{notice}</small>}</form></section>
 
-      <footer className="site-footer"><div className="footer-main"><Link href="/" className="brand footer-brand"><span className="brand-mark">S<span>+</span></span><span>social<span className="brand-light">good</span><small>DEVELOPMENT EVENTS</small></span></Link><p>Bringing people together<br />to build a better tomorrow.</p><div className="footer-links"><a href="#events">Upcoming events</a><Link href="/create-event">Create an event</Link><Link href="/dashboard">Dashboard</Link><Link href="/login">Login</Link></div></div><div className="footer-bottom"><span>© {year ?? ""} SocialGood. Made for community.</span><span>GROW GOOD. DO GOOD. BE GOOD. ✳</span></div></footer>
     </main>
   );
 }

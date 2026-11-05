@@ -250,3 +250,87 @@ html.dark .event-card { background: #19392c; color: var(--foreground); border-co
   .detail-facts { grid-template-columns: 1fr; gap: 20px; }
   .detail-actions .button { width: 100%; }
 }
+
+/* Shared navigation, footer and persistent page themes */
+.app-frame { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+.app-page-content { flex: 1; min-width: 0; }
+.app-page-content > .form-page { min-height: 0; width: 100%; }
+.app-page-content > .site-shell { min-height: 0; }
+.shared-header { background: var(--background); gap: 24px; }
+.shared-header .brand { flex-shrink: 0; }
+.shared-header .header-actions { gap: 16px; }
+.shared-header .desktop-nav { gap: 24px; }
+.shared-header .profile-label { max-width: 130px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.shared-header .profile-menu { width: 220px; max-width: calc(100vw - 32px); border-radius: 8px; }
+.profile-name { overflow-wrap: anywhere; }
+.logout-link { border: 0; background: transparent; color: inherit; padding: 8px 0; font: inherit; cursor: pointer; }
+.logout-link:disabled { opacity: .6; cursor: wait; }
+.mobile-menu-toggle { display: none; border: 1px solid var(--line); padding: 9px 12px; border-radius: 6px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.nav-loading { max-width: 90px; font-size: 10px; line-height: 1.4; color: var(--muted); }
+.chrome-error { margin: 0; padding: 12px 6.5%; color: #b42318; }
+.skip-link { position: absolute; left: 16px; top: -100px; padding: 12px 18px; background: var(--background); color: var(--foreground); border: 2px solid #81984b; z-index: 100; }
+.skip-link:focus { top: 12px; }
+.shared-header :is(a, button):focus-visible, .site-footer a:focus-visible { outline: 2px solid #81984b; outline-offset: 5px; }
+.auth-page, .dashboard-page { min-height: 60vh; background: var(--background); color: var(--foreground); }
+.auth-page h1, .dashboard-page h1 { font-family: Georgia, serif; font-weight: 500; line-height: 1.15; }
+.auth-submit { background: #245b43; border-radius: 3px; padding: 15px 20px; }
+.auth-social { border-radius: 3px; }
+.site-footer .footer-links a:hover { text-decoration: underline; text-underline-offset: 4px; }
+html.dark .site-shell { background: var(--background); color: var(--foreground); }
+html.dark .shared-header, html.dark .hero-bottom { border-color: var(--line); }
+html.dark .shared-header .brand { color: #edf2e8; }
+html.dark .brand-light { color: #b8ca9a; }
+html.dark .desktop-nav, html.dark .hero-copy > p, html.dark .intro-text, html.dark .gallery-heading > p { color: var(--muted); }
+html.dark .hero-stamp, html.dark .photo-note { background: #19392c; color: var(--foreground); border-color: var(--line); }
+html.dark .intro-section, html.dark .gallery-section { background: #19392c; }
+html.dark .feature-card { background: #173e2e; border-color: var(--line); }
+html.dark .feature-card p, html.dark .hero-proof small, html.dark .photo-note small { color: var(--muted); }
+html.dark .events-section { background: var(--background); }
+html.dark .profile-menu { background: #19392c; color: var(--foreground); border-color: var(--line); }
+html.dark .profile-menu a:hover { background: #254b39; }
+html.dark .profile-name { border-color: var(--line); }
+html.dark .event-content > p, html.dark .event-card-bottom small { color: var(--muted); }
+html.dark .event-card-bottom { border-color: var(--line); }
+html.dark .event-card-bottom a, html.dark .text-link { color: #c6df98; }
+html.dark .hero-proof .proof-avatars span { border-color: var(--background); }
+html.dark .newsletter-section { background: #203e2d; color: var(--foreground); }
+html.dark .newsletter-section p, html.dark .newsletter-form small { color: var(--muted); }
+html.dark .newsletter-form input { background: transparent; color: var(--foreground); }
+html.dark .empty-events { border-color: var(--line); color: var(--muted); }
+html.dark .empty-events h3 { color: var(--foreground); }
+html.dark .section-kicker, html.dark .eyebrow, html.dark .event-date { color: #bfd69b; }
+html.dark .chrome-error { color: #ffb4ab; }
+html.dark :is(.auth-page, .dashboard-page) .bg-white { background: #19392c; }
+html.dark :is(.auth-page, .dashboard-page) :is(.bg-slate-50, .bg-emerald-50) { background: #102b20; }
+html.dark :is(.auth-page, .dashboard-page) :is(.text-slate-900, .text-slate-700, .text-emerald-950, .text-emerald-800) { color: #edf2e8; }
+html.dark :is(.auth-page, .dashboard-page) :is(.text-slate-600, .text-slate-500, .text-slate-400) { color: #bdc9bc; }
+html.dark :is(.auth-page, .dashboard-page) :is(.text-emerald-700, .text-red-600) { color: #c6df98; }
+html.dark :is(.auth-page, .dashboard-page) :is(.border-slate-200, .border-slate-300) { border-color: #456451; }
+html.dark :is(.auth-page, .dashboard-page) .bg-red-50 { background: #3c2425; }
+html.dark :is(.auth-page, .dashboard-page) :is(.text-red-700, .text-red-600) { color: #ffb4ab; }
+html.dark :is(.auth-page, .dashboard-page) .border-red-200 { border-color: #92514e; }
+html.dark .auth-page .bg-slate-200 { background: #456451; }
+html.dark :is(.auth-page, .dashboard-page) :is(.hover\:bg-slate-50, .hover\:bg-slate-100):hover { background: #254b39; }
+@media (max-width: 1080px) {
+  .shared-header { padding-inline: 4%; gap: 18px; }
+  .shared-header .desktop-nav { gap: 16px; }
+  .shared-header .profile-label { display: none; }
+  .shared-header .header-actions { gap: 12px; }
+}
+@media (max-width: 800px) {
+  .shared-header { height: 76px; }
+  .mobile-menu-toggle { display: inline-flex; }
+  .shared-header .shared-nav { display: none; }
+  .shared-header .shared-nav.is-open { position: absolute; display: flex; flex-direction: column; align-items: stretch; gap: 0; top: 100%; left: 0; right: 0; padding: 12px 5%; background: var(--background); color: var(--foreground); border-block: 1px solid var(--line); box-shadow: 0 12px 20px #10251e15; }
+  .shared-nav a { padding: 14px 0; }
+}
+@media (max-width: 420px) {
+  .shared-header { padding-inline: 16px; gap: 8px; }
+  .shared-header .brand { font-size: 16px; gap: 6px; }
+  .shared-header .brand-mark { width: 29px; height: 29px; font-size: 17px; }
+  .shared-header .header-actions { gap: 8px; font-size: 11px; }
+  .shared-header .theme-toggle { width: 29px; height: 29px; }
+  .shared-header .avatar { width: 27px; height: 27px; }
+  .shared-header .profile-button { gap: 3px; }
+  .mobile-menu-toggle { padding: 8px; }
+}

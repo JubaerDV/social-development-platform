@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useEffect } from "react";
@@ -23,26 +23,15 @@ export default function DashboardPage() {
 
   if (isPending || !session) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-50">
+      <main className="dashboard-page flex items-center justify-center px-5 py-12">
         <p className="font-medium text-slate-600">Checking your session...</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 px-5 py-12">
+    <main className="dashboard-page px-5 py-12">
       <section className="mx-auto max-w-4xl">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <Link href="/" className="text-xl font-bold text-emerald-800">
-            Social Development
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 font-semibold text-slate-700 transition hover:bg-slate-100"
-          >
-            Logout
-          </button>
-        </div>
 
         <div className="mt-12 rounded-3xl bg-white p-8 shadow-sm sm:p-12">
           <p className="text-sm font-bold uppercase tracking-widest text-emerald-700">
