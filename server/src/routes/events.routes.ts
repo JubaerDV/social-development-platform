@@ -4,6 +4,7 @@ import { client } from "../config/database.js";
 import { auth } from "../auth.js";
 import { fromNodeHeaders } from "better-auth/node";
 import { verifyEventToken } from "../lib/verify-event-token.js";
+import { validateEventInput } from "../lib/event-validation.js";
 
 const router = Router();
 
@@ -26,19 +27,6 @@ async function currentUser(req: Request) {
     token => auth.api.verifyJWT({ body: { token } }),
   );
   return valid ? session.user : null;
-}
-
-function validText(value: unknown, maxLength: number) {
-  return typeof value === "string" &&
-    value.trim().length > 0 &&
-    value.trim().length <= maxLength;
-}
-
-function validEventDate(value: unknown) {
-  if (typeof value !== "string" || !value.trim()) return null;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime()) || date <= new Date()) return null;
-  return date;
 }
 
 router.get("/", async (req, res) => {
@@ -155,46 +143,12 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const {
-      title,
-      description,
-      imageUrl,
-      location,
-      category,
-      eventDate
-    } = req.body ?? {};
-
-    if (
-      !validText(title, 120) ||
-      !validText(description, 5000) ||
-      !validText(location, 200) ||
-      !validText(category, 60)
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Please complete all required fields within the allowed limits."
-      });
+    const parsed = validateEventInput(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ success: false, message: parsed.message });
     }
-
-    const date = validEventDate(eventDate);
-
-    if (!date) {
-      return res.status(400).json({
-        success: false,
-        message: "Event date must be in the future."
-      });
-    }
-
-    if (
-      imageUrl !== undefined &&
-      imageUrl !== "" &&
-      (typeof imageUrl !== "string" || imageUrl.length > 1000)
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Image URL is invalid or too long."
-      });
-    }
+    const { title, description, imageUrl, location, category, eventDate } = parsed.data;
+    const date = new Date(eventDate);
 
     const now = new Date().toISOString();
 
@@ -250,46 +204,12 @@ router.put("/:id", async (req, res) => {
       });
     }
 
-    const {
-      title,
-      description,
-      imageUrl,
-      location,
-      category,
-      eventDate
-    } = req.body ?? {};
-
-    if (
-      !validText(title, 120) ||
-      !validText(description, 5000) ||
-      !validText(location, 200) ||
-      !validText(category, 60)
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Please complete all required fields within the allowed limits."
-      });
+    const parsed = validateEventInput(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({ success: false, message: parsed.message });
     }
-
-    const date = validEventDate(eventDate);
-
-    if (!date) {
-      return res.status(400).json({
-        success: false,
-        message: "Event date must be in the future."
-      });
-    }
-
-    if (
-      imageUrl !== undefined &&
-      imageUrl !== "" &&
-      (typeof imageUrl !== "string" || imageUrl.length > 1000)
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Image URL is invalid or too long."
-      });
-    }
+    const { title, description, imageUrl, location, category, eventDate } = parsed.data;
+    const date = new Date(eventDate);
 
     const result = await eventsCollection().updateOne(
       {
