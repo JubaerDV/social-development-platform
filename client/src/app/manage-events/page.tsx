@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { toast } from "sonner";
 import { EventCardsSkeleton, PageSkeleton } from "@/components/loading-skeletons";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -141,6 +142,7 @@ export default function MemberEventsPage() {
       setEditingId("");
       setForm(emptyForm);
       setMessage("Event updated successfully.");
+      toast.success("Event updated successfully.");
     } catch (reason) {
       setError(
         reason instanceof Error
@@ -180,6 +182,7 @@ export default function MemberEventsPage() {
       if (editingId === id) cancelEdit();
 
       setMessage("Event deleted successfully.");
+      toast.success("Event deleted successfully.");
     } catch (reason) {
       setError(
         reason instanceof Error

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { toast } from "sonner";
 import { PageSkeleton } from "@/components/loading-skeletons";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -37,6 +38,7 @@ export default function CreateEventPage() {
         throw new Error(data.message || "Could not create event.");
       }
 
+      toast.success("Event created successfully.");
       router.push("/events");
       router.refresh();
     } catch (reason) {

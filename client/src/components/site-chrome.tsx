@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { consumeAuthSuccess } from "@/lib/auth-toast";
 
 export default function SiteChrome({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -45,6 +48,12 @@ export default function SiteChrome({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (!session?.user) return;
+    const message = consumeAuthSuccess();
+    if (message) toast.success(message);
+  }, [session?.user.id]);
+
   function toggleTheme() {
     const next = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", next);
@@ -73,6 +82,7 @@ export default function SiteChrome({ children }: { children: ReactNode }) {
 
   return (
     <div className="app-frame">
+      <Toaster theme={dark ? "dark" : "light"} />
       <a className="skip-link" href="#main-content">Skip to content</a>
       <div className="top-strip"><span>Small actions. Stronger communities.</span><span>Make a difference, one event at a time.</span></div>
       <header className="site-header shared-header" ref={headerRef}>

@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { queueAuthSuccess, clearAuthSuccess } from "@/lib/auth-toast";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function LoginPage() {
     if (loading) return;
 
     setError("");
+    clearAuthSuccess();
     setLoading(true);
 
     try {
@@ -34,6 +36,7 @@ export default function LoginPage() {
         return;
       }
 
+      queueAuthSuccess("Signed in successfully.");
       window.location.assign("/dashboard");
     } catch {
       setError("Unable to connect to the server. Please try again.");
@@ -45,19 +48,23 @@ export default function LoginPage() {
     if (loading) return;
 
     setError("");
+    clearAuthSuccess();
     setLoading(true);
 
     try {
+      queueAuthSuccess("Signed in with Google successfully.");
       const result = await authClient.signIn.social({
         provider: "google",
         callbackURL: `${window.location.origin}/dashboard`,
       });
 
       if (result.error) {
+        clearAuthSuccess();
         setError(result.error.message || "Google sign-in failed.");
         setLoading(false);
       }
     } catch {
+      clearAuthSuccess();
       setError("Unable to connect to Google sign-in. Please try again.");
       setLoading(false);
     }

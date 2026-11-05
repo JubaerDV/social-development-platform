@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { toast } from "sonner";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -43,6 +44,7 @@ function ProfileForm({ user, refresh }: { user: ProfileUser; refresh: () => Prom
       if (result.error) throw new Error(result.error.message || "Unable to update your profile.");
       await refresh();
       setNotice("Your profile has been updated.");
+      toast.success("Your profile has been updated.");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Unable to update your profile. Please try again.");
     } finally {

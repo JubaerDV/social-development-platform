@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { queueAuthSuccess, clearAuthSuccess } from "@/lib/auth-toast";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -27,6 +29,7 @@ export default function RegisterPage() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    clearAuthSuccess();
 
     if (name.trim().length < 2) {
       setError("Please enter your full name.");
@@ -65,6 +68,7 @@ export default function RegisterPage() {
         return;
       }
 
+      toast.success("Your account has been created.");
       router.push("/dashboard");
       router.refresh();
     } catch {
@@ -76,19 +80,23 @@ export default function RegisterPage() {
 
   async function handleGoogleSignIn() {
     setError("");
+    clearAuthSuccess();
     setLoading(true);
 
     try {
+      queueAuthSuccess("Signed in with Google successfully.");
       const result = await authClient.signIn.social({
         provider: "google",
         callbackURL: `${window.location.origin}/dashboard`,
       });
 
       if (result.error) {
+        clearAuthSuccess();
         setError(result.error.message || "Google sign-in failed.");
         setLoading(false);
       }
     } catch {
+      clearAuthSuccess();
       setError("Unable to connect to Google sign-in. Please try again.");
       setLoading(false);
     }
