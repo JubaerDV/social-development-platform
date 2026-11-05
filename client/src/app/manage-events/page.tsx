@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { EventCardsSkeleton, PageSkeleton } from "@/components/loading-skeletons";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { eventDateToIso, minimumEventDate, formatEventDate, toEventInput } from "@/lib/event-time";
@@ -43,7 +44,8 @@ export default function MemberEventsPage() {
   const { data: session, isPending } = authClient.useSession();
 
   const [events, setEvents] = useState<EventItem[]>([]);
-  const [message, setMessage] = useState("Loading events...");
+  const [message, setMessage] = useState("");
+  const [eventsLoading, setEventsLoading] = useState(true);
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState("");
   const [saving, setSaving] = useState(false);
@@ -54,6 +56,9 @@ export default function MemberEventsPage() {
     if (!session) return;
 
     let active = true;
+    setEventsLoading(true);
+    setEvents([]);
+    setMessage("");
 
     fetch(`${api}/api/events/member/managed`, {
       credentials: "include"
@@ -75,6 +80,9 @@ export default function MemberEventsPage() {
               : "Unable to load events."
           );
         }
+      })
+      .finally(() => {
+        if (active) setEventsLoading(false);
       });
 
     return () => {
@@ -184,7 +192,7 @@ export default function MemberEventsPage() {
   }
 
   if (isPending) {
-    return <main className="form-page">Loading your account...</main>;
+    return <PageSkeleton label="Loading your account..." />;
   }
 
   if (!session) {
@@ -301,7 +309,8 @@ export default function MemberEventsPage() {
           </form>
         )}
 
-        {events.length > 0 && (
+        {eventsLoading && <EventCardsSkeleton />}
+        {!eventsLoading && events.length > 0 && (
           <div className="event-grid">
             {events.map(event => (
               <article className="event-card" key={event._id}>
@@ -347,7 +356,7 @@ export default function MemberEventsPage() {
           </div>
         )}
 
-        {!events.length && !message && (
+        {!eventsLoading && !events.length && !message && (
           <p>You haven't organized any events yet.</p>
         )}
         <Link href="/create-event" className="button">Create an event</Link>

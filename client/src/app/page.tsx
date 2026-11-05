@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { EventCardsSkeleton } from "@/components/loading-skeletons";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { formatEventDate } from "@/lib/event-time";
@@ -86,7 +87,7 @@ export default function Home() {
 
       <section className="events-section" id="events">
         <div className="section-heading"><div><div className="section-kicker">FIND YOUR NEXT YES <span>✳</span></div><h2>Upcoming <em>events.</em></h2></div><Link className="text-link" href="/events">View all events <span>→</span></Link></div>
-        {eventsLoading ? <div className="empty-events">Finding good things happening near you…</div> : events.length ? <div className="event-grid">{events.slice(0, 6).map((event) => <article className="event-card" key={event._id}><div className="event-image" style={{ backgroundImage: `url("${event.imageUrl || "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=900&q=85"}")` }}><span>{event.category}</span></div><div className="event-content"><div className="event-date">{formatEventDate(event.eventDate)}</div><h3>{event.title}</h3><p>⌖ {event.location}</p><div className="event-card-bottom"><small>By {event.organizerName}</small><Link href={`/events/${event._id}`}>View event ↗</Link></div></div></article>)}</div> : <div className="empty-events"><span>✳</span><h3>Good things are getting organized.</h3><p>There are no upcoming events just yet. Be the first to bring people together.</p><Link className="button" href={session ? "/create-event" : "/register"}>Create an event <span>↗</span></Link></div>}
+        {eventsLoading ? <EventCardsSkeleton count={6} /> : events.length ? <div className="event-grid">{events.slice(0, 6).map((event) => <article className="event-card" key={event._id}><div className="event-image" style={{ backgroundImage: `url("${event.imageUrl || "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=900&q=85"}")` }}><span>{event.category}</span></div><div className="event-content"><div className="event-date">{formatEventDate(event.eventDate)}</div><h3>{event.title}</h3><p>⌖ {event.location}</p><div className="event-card-bottom"><small>By {event.organizerName}</small><Link href={`/events/${event._id}`}>View event ↗</Link></div></div></article>)}</div> : <div className="empty-events"><span>✳</span><h3>Good things are getting organized.</h3><p>There are no upcoming events just yet. Be the first to bring people together.</p><Link className="button" href={session ? "/create-event" : "/register"}>Create an event <span>↗</span></Link></div>}
       </section>
 
       <section className="gallery-section" id="gallery"><div className="gallery-heading"><div><div className="section-kicker">MOMENTS THAT MATTER <span>✳</span></div><h2>Real people. <em>Real change.</em></h2></div><p>Every gathering is a chance to make a difference. Here’s to the people who make it happen.</p></div><div className="gallery-grid">{gallery.map((item, index) => <div className={`gallery-photo gallery-photo-${index + 1}`} key={item.label} style={{ backgroundImage: `url("${item.image}")` }}><span>{item.label}</span></div>)}</div></section>

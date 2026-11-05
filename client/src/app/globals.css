@@ -334,3 +334,36 @@ html.dark :is(.auth-page, .dashboard-page) :is(.hover\:bg-slate-50, .hover\:bg-s
   .shared-header .profile-button { gap: 3px; }
   .mobile-menu-toggle { padding: 8px; }
 }
+
+/* Member profiles and accessible loading skeletons */
+.profile-layout { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 36px; margin-top: 32px; }
+.profile-summary { text-align: center; min-width: 0; }
+.profile-photo { display: block; width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; object-fit: cover; border: 1px solid var(--line); }
+.profile-initial { display: grid; place-items: center; background: #dce98d; color: #245b43; font-size: 48px; font-weight: 700; }
+.profile-display-name { margin-top: 18px; font: 500 22px/1.4 Georgia, serif; overflow-wrap: anywhere; }
+.profile-form { grid-template-columns: minmax(0, 1fr); margin-top: 0; }
+.profile-hint { color: var(--muted); font-size: 12px; font-weight: 400; line-height: 1.6; }
+.profile-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.profile-actions .button-outline { border: 1px solid var(--line); background: transparent; color: var(--foreground); }
+.profile-success { color: #245b43; line-height: 1.6; }
+.profile-form input[readonly] { background: var(--background); color: var(--muted); }
+.skeleton { position: relative; overflow: hidden; background: #e4e9df; border-radius: 6px; }
+.skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, #ffffff66, transparent); animation: skeleton-shimmer 1.5s ease-in-out infinite; }
+.skeleton-image { height: 190px; border-radius: 0; flex-shrink: 0; }
+.skeleton-body, .skeleton-page { display: grid; gap: 18px; }
+.skeleton-body { padding: 24px; }
+.skeleton-line { height: 14px; width: 100%; }
+.skeleton-short { width: 45%; }
+.skeleton-title { height: 32px; width: 80%; }
+.skeleton-field { height: 52px; width: 100%; }
+.loading-grid { margin-block: 24px; }
+html.dark .profile-success { color: #c6df98; }
+html.dark .skeleton { background: #2a4939; }
+html.dark .skeleton::after { background: linear-gradient(90deg, transparent, #ffffff12, transparent); }
+@keyframes skeleton-shimmer { to { transform: translateX(100%); } }
+@media (max-width: 640px) {
+  .profile-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .profile-photo { width: 96px; height: 96px; }
+  .profile-actions .button { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .skeleton::after { animation: none; } }

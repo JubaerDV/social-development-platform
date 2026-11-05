@@ -101,6 +101,7 @@ export default function SiteChrome({ children }: { children: ReactNode }) {
                 {profileOpen && <nav className="profile-menu" id="account-navigation" aria-label="Account navigation">
                   <span className="profile-name">{name}</span>
                   <Link href="/dashboard" onClick={closeMenus}>Dashboard</Link>
+                  <Link href="/profile" onClick={closeMenus}>My profile</Link>
                   <Link href="/create-event" onClick={closeMenus}>Create Event</Link>
                   <Link href="/manage-events" onClick={closeMenus}>Manage Events</Link>
                   <Link href="/joined-events" onClick={closeMenus}>Joined Events</Link>
@@ -122,6 +123,7 @@ export default function SiteChrome({ children }: { children: ReactNode }) {
             <Link href="/events" onClick={closeMenus}>Upcoming events</Link>
             <Link href="/create-event" onClick={closeMenus}>Create an event</Link>
             <Link href="/manage-events" onClick={closeMenus}>Manage events</Link>
+            <Link href="/profile" onClick={closeMenus}>My profile</Link>
             <Link href="/joined-events" onClick={closeMenus}>Joined events</Link>
             <Link href="/#gallery" onClick={closeMenus}>Community gallery</Link>
             <Link href={session ? "/dashboard" : "/login"} onClick={closeMenus}>{session ? "Dashboard" : "Login"}</Link>

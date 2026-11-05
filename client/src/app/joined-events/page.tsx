@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { EventCardsSkeleton, PageSkeleton } from "@/components/loading-skeletons";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { formatEventDate } from "@/lib/event-time";
@@ -19,12 +20,16 @@ type EventItem = {
 export default function JoinedEventsPage() {
   const { data: session, isPending } = authClient.useSession();
   const [events, setEvents] = useState<EventItem[]>([]);
-  const [message, setMessage] = useState("Loading events...");
+  const [message, setMessage] = useState("");
+  const [eventsLoading, setEventsLoading] = useState(true);
 
   useEffect(() => {
     if (!session) return;
 
     let active = true;
+    setEventsLoading(true);
+    setEvents([]);
+    setMessage("");
 
     fetch(`${api}/api/events/member/joined`, { credentials: "include" })
       .then(async response => {
@@ -36,6 +41,9 @@ export default function JoinedEventsPage() {
       })
       .catch(reason => {
         if (active) setMessage(reason instanceof Error ? reason.message : "Unable to load events.");
+      })
+      .finally(() => {
+        if (active) setEventsLoading(false);
       });
 
     return () => {
@@ -44,7 +52,7 @@ export default function JoinedEventsPage() {
   }, [session]);
 
   if (isPending) {
-    return <main className="form-page">Loading...</main>;
+    return <PageSkeleton label="Loading your account..." />;
   }
 
   if (!session) {
@@ -58,7 +66,8 @@ export default function JoinedEventsPage() {
         <span className="section-kicker">YOUR COMMUNITY ACTIVITY</span>
         <h1>Events I've joined</h1>
         {message && <p role="status">{message}</p>}
-        {events.length > 0 && (
+        {eventsLoading && <EventCardsSkeleton />}
+        {!eventsLoading && events.length > 0 && (
           <div className="event-grid">
             {events.map(event => (
               <article className="event-card" key={event._id}>
@@ -78,7 +87,7 @@ export default function JoinedEventsPage() {
             ))}
           </div>
         )}
-        {!events.length && !message && <p>You haven't joined any events yet.</p>}
+        {!eventsLoading && !events.length && !message && <p>You haven't joined any events yet.</p>}
         <Link href="/events" className="button">Explore events ↗</Link>
       </section>
     </main>

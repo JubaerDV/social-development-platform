@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PageSkeleton } from "@/components/loading-skeletons";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -48,7 +49,7 @@ export default function CreateEventPage() {
   }
 
   if (isPending) {
-    return <main className="form-page">Loading your account...</main>;
+    return <PageSkeleton label="Loading your account..." />;
   }
 
   if (!session) {

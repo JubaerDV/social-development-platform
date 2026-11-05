@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { PageSkeleton } from "@/components/loading-skeletons";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -22,11 +23,7 @@ export default function DashboardPage() {
   }
 
   if (isPending || !session) {
-    return (
-      <main className="dashboard-page flex items-center justify-center px-5 py-12">
-        <p className="font-medium text-slate-600">Checking your session...</p>
-      </main>
-    );
+    return <PageSkeleton label="Checking your session..." />;
   }
 
   return (
@@ -55,6 +52,7 @@ export default function DashboardPage() {
             <Link href="/" className="rounded-xl bg-emerald-700 px-5 py-4 text-center font-semibold text-white transition hover:bg-emerald-800">
               Explore community
             </Link>
+            <Link href="/profile" className="rounded-xl border border-slate-300 px-5 py-4 text-center font-semibold text-slate-700 transition hover:bg-slate-50">My profile</Link>
             <button onClick={handleLogout} className="rounded-xl border border-slate-300 px-5 py-4 font-semibold text-slate-700 transition hover:bg-slate-50">
               Sign out
             </button>

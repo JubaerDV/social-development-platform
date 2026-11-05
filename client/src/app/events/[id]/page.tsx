@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { EventDetailsSkeleton } from "@/components/loading-skeletons";
 import { useParams, useRouter } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
@@ -109,7 +110,7 @@ function EventDetailsContent() {
       <section className="form-panel"><h1>Unable to load event</h1><p role="alert">{error}</p></section>
     </main>
   );
-  if (!event) return <main className="form-page" role="status">Loading event...</main>;
+  if (!event) return <EventDetailsSkeleton />;
 
   return (
     <main className="form-page event-detail-page">
@@ -144,5 +145,5 @@ function EventDetailsContent() {
 }
 
 export default function EventDetailsPage() {
-  return <Suspense fallback={<main className="form-page" role="status">Loading event...</main>}><EventDetailsContent /></Suspense>;
+  return <Suspense fallback={<EventDetailsSkeleton />}><EventDetailsContent /></Suspense>;
 }
