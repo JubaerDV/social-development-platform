@@ -222,13 +222,16 @@ export default function MemberEventsPage() {
             </label>
 
             <label>
-              Category
+              Event type
               <select
                 required
                 value={form.category}
                 onChange={e => setForm({ ...form, category: e.target.value })}
               >
                 <option value="">Select a category</option>
+                <option>Cleanup</option>
+                <option>Plantation</option>
+                <option>Donation</option>
                 <option>Community Service</option>
                 <option>Environment</option>
                 <option>Education</option>
@@ -260,9 +263,12 @@ export default function MemberEventsPage() {
             </label>
 
             <label>
-              Image URL (optional)
+              Event image URL
               <input
                 type="url"
+                required
+                maxLength={1000}
+                pattern="[hH][tT][tT][pP][sS]?://.+"
                 value={form.imageUrl}
                 onChange={e => setForm({ ...form, imageUrl: e.target.value })}
               />

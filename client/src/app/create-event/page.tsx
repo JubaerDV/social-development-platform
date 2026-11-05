@@ -84,9 +84,12 @@ export default function CreateEventPage() {
           </label>
 
           <label>
-            Category
+            Event type
             <select name="category" required defaultValue="">
               <option value="" disabled>Select a category</option>
+              <option value="Cleanup">Cleanup</option>
+              <option value="Plantation">Plantation</option>
+              <option value="Donation">Donation</option>
               <option value="Community Service">Community Service</option>
               <option value="Environment">Environment</option>
               <option value="Education">Education</option>
@@ -118,10 +121,12 @@ export default function CreateEventPage() {
           </label>
 
           <label className="full-field">
-            Image URL (optional)
+            Event image URL
             <input
               name="imageUrl"
               type="url"
+              required
+              pattern="[hH][tT][tT][pP][sS]?://.+"
               maxLength={1000}
               placeholder="https://example.com/event-image.jpg"
             />
