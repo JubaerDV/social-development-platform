@@ -1,8 +1,9 @@
-﻿import { Router } from "express";
+import { Router, type Request } from "express";
 import { ObjectId } from "mongodb";
 import { client } from "../config/database.js";
 import { auth } from "../auth.js";
 import { fromNodeHeaders } from "better-auth/node";
+import { verifyEventToken } from "../lib/verify-event-token.js";
 
 const router = Router();
 
@@ -12,11 +13,19 @@ function eventsCollection() {
   return client.db(name).collection("events");
 }
 
-async function currentUser(req: any) {
+async function currentUser(req: Request) {
   const session = await auth.api.getSession({
     headers: fromNodeHeaders(req.headers)
   });
-  return session?.user ?? null;
+  if (!session?.user) return null;
+
+  const valid = await verifyEventToken(
+    req.headers.authorization,
+    session.user.id,
+    process.env.BETTER_AUTH_URL || "http://localhost:5000",
+    token => auth.api.verifyJWT({ body: { token } }),
+  );
+  return valid ? session.user : null;
 }
 
 function validText(value: unknown, maxLength: number) {
